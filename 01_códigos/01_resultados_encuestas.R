@@ -8,6 +8,8 @@
 # Última actualización:       07 de octubre de 2021
 #------------------------------------------------------------------------------#
 
+
+
 # 0. Configuración inicial -----------------------------------------------------
 
 # Silenciar mensajes de .group en dplyr
@@ -24,7 +26,6 @@ rm(list=ls())
 
 # Establecer directorios
 inp     <- "datos_crudos/"
-out     <- "figs/seminario_punitivismo/"
 
 # Activar las credenciales de google
 googledrive::drive_auth("rmedina@intersecta.org")
@@ -181,9 +182,20 @@ v_formato <- ".png"
 
 ## 3.1. Figuras ----------------------------------------------------------------
 
+# Cambiar filtros y directorio según el grupo que se quiera estudiar 
+out     <- "figs/seminario_punitivismo/participantes/" # Cambiar según filtros 
+
+# Para ambos grupos 
+# df_data <- df_respuestas
+
+# Solo para las participantes del seminario
+df_data <-  df_respuestas                     %>% 
+  filter(grupo == "Participantes seminario")
+
 ### 3.1.1. Pena de muerte ------------------------------------------------------
 
-g1 <- ggplot(df_respuestas, 
+
+g1 <- ggplot(df_data, 
   aes(x = t01_pena_muerte, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -208,7 +220,7 @@ ggsave(paste0(out, "g01_", "pena_muerte", v_formato),
 ### 3.1.2. La cárcel es necesaria ----------------------------------------------
 
 
-g2 <- ggplot(df_respuestas, 
+g2 <- ggplot(df_data, 
   aes(x = t02_carcel_nece, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -232,7 +244,7 @@ ggsave(paste0(out, "g02_", "carcel_necesaria", v_formato),
 
 ### 3.1.3. Abolir cárceles -----------------------------------------------------
 
-g3 <- ggplot(df_respuestas, 
+g3 <- ggplot(df_data, 
   aes(x = t03_abolir_carc, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -256,7 +268,7 @@ ggsave(paste0(out, "g03_", "abolir_prisiones", v_formato),
 
 ### 3.1.4. Penas proporcionales al daño ----------------------------------------
 
-g4 <- ggplot(df_respuestas, 
+g4 <- ggplot(df_data, 
   aes(x = t04_pena_propor, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -280,7 +292,7 @@ ggsave(paste0(out, "g04_", "pena_proporcional", v_formato),
 
 ### 3.1.5. Cadena perpetua -----------------------------------------------------
 
-g5 <- ggplot(df_respuestas, 
+g5 <- ggplot(df_data, 
   aes(x = t05_cadena_perp, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -303,7 +315,7 @@ ggsave(paste0(out, "g05_", "cadena_perpetua", v_formato),
 
 ### 3.1.6. Criminalizar protege derechos ---------------------------------------
 
-g6 <- ggplot(df_respuestas, 
+g6 <- ggplot(df_data, 
   aes(x = t06_vulnera_der, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -327,7 +339,7 @@ ggsave(paste0(out, "g06_", "criminalizar_protege", v_formato),
 
 ### 3.1.7. Castigar desincentiva -----------------------------------------------
 
-g7 <- ggplot(df_respuestas, 
+g7 <- ggplot(df_data, 
   aes(x = t07_desincentiv, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -352,7 +364,7 @@ ggsave(paste0(out, "g07_", "castigo_desincentivo", v_formato),
 
 ### 3.1.8. Registro de agresores -----------------------------------------------
 
-g8 <- ggplot(df_respuestas, 
+g8 <- ggplot(df_data, 
   aes(x = t08_registro_ag, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -376,7 +388,7 @@ ggsave(paste0(out, "g08_", "registro_agresores", v_formato),
 
 ### 3.1.9. Derecho a saber quién cometió delitos -------------------------------
 
-g9 <- ggplot(df_respuestas, 
+g9 <- ggplot(df_data, 
   aes(x = t09_saber_socie, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -400,7 +412,7 @@ ggsave(paste0(out, "g09_", "derecho_conocer_agresores", v_formato),
 
 ### 3.1.10. Pena de muerte ------------------------------------------------------
 
-g10 <- ggplot(df_respuestas, 
+g10 <- ggplot(df_data, 
   aes(x = t10_carta_antec, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -424,7 +436,7 @@ ggsave(paste0(out, "g10_", "carta_antecedentes", v_formato),
 
 ### 3.1.11. Amenzar a hombres con cárcel ---------------------------------------
 
-g11 <- ggplot(df_respuestas, 
+g11 <- ggplot(df_data, 
   aes(x = t11_amenaza_dig, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -449,7 +461,7 @@ ggsave(paste0(out, "g11_", "amenaza_cárcel", v_formato),
 
 ### 3.1.12. Creer víctimas -----------------------------------------------------
 
-g12 <- ggplot(df_respuestas, 
+g12 <- ggplot(df_data, 
   aes(x = t12_creer_victi, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -474,7 +486,7 @@ ggsave(paste0(out, "g12_", "creer_víctimas", v_formato),
 
 ### 3.1.13. Políticas penales y necesidades ------------------------------------
 
-g13 <- ggplot(df_respuestas, 
+g13 <- ggplot(df_data, 
   aes(x = t13_politica_pe, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -499,7 +511,7 @@ ggsave(paste0(out, "g13_", "políticas_penales", v_formato),
 
 ### 3.1.14. Cualquier castigo --------------------------------------------------
 
-g14 <- ggplot(df_respuestas, 
+g14 <- ggplot(df_data, 
   aes(x = t14_castigo_vic, fill = grupo, color = grupo)) +
   geom_density(aes(y = ..ndensity..), alpha = 0.3) +
   theme_classic() +
@@ -533,22 +545,23 @@ v_topic_text <- names(df_part_crudo)[10:23]
 v_topic_id   <- names(df_respuestas)[5:18]
 
 # Cambiar a formato largo y añadir texto de las preguntas
-df_data <- df_respuestas %>% 
+df_data <- df_respuestas                              %>% 
+  filter(grupo == "Participantes seminario")          %>% 
   pivot_longer(
-    cols = c(t01_pena_muerte:t14_castigo_vic), 
-    names_to = "id_pregunta", 
-    values_to = "respuesta") %>% 
+    cols      = c(t01_pena_muerte:t14_castigo_vic), 
+    names_to  = "id_pregunta", 
+    values_to = "respuesta")                          %>% 
   mutate(
     text_pregunta = case_when(
-      id_pregunta == v_topic_id[1] ~ v_topic_text[1], 
-      id_pregunta == v_topic_id[2] ~ v_topic_text[2], 
-      id_pregunta == v_topic_id[3] ~ v_topic_text[3], 
-      id_pregunta == v_topic_id[4] ~ v_topic_text[4], 
-      id_pregunta == v_topic_id[5] ~ v_topic_text[5], 
-      id_pregunta == v_topic_id[6] ~ v_topic_text[6], 
-      id_pregunta == v_topic_id[7] ~ v_topic_text[7], 
-      id_pregunta == v_topic_id[8] ~ v_topic_text[8], 
-      id_pregunta == v_topic_id[9] ~ v_topic_text[9], 
+      id_pregunta == v_topic_id[1]  ~ v_topic_text[1], 
+      id_pregunta == v_topic_id[2]  ~ v_topic_text[2], 
+      id_pregunta == v_topic_id[3]  ~ v_topic_text[3], 
+      id_pregunta == v_topic_id[4]  ~ v_topic_text[4], 
+      id_pregunta == v_topic_id[5]  ~ v_topic_text[5], 
+      id_pregunta == v_topic_id[6]  ~ v_topic_text[6], 
+      id_pregunta == v_topic_id[7]  ~ v_topic_text[7], 
+      id_pregunta == v_topic_id[8]  ~ v_topic_text[8], 
+      id_pregunta == v_topic_id[9]  ~ v_topic_text[9], 
       id_pregunta == v_topic_id[10] ~ v_topic_text[10], 
       id_pregunta == v_topic_id[11] ~ v_topic_text[11], 
       id_pregunta == v_topic_id[12] ~ v_topic_text[12], 
@@ -579,12 +592,4 @@ ggplot(df_data, aes(x = respuesta, fill = grupo, color = grupo)) +
 
 ggsave(paste0(out, "g00_", "respuestas_inicio", v_formato),
   width = 12, height = 12)
-
-
-# Guardar en la base en el Drive
-# googlesheets4::range_write(ss = v_id, data = df_final,
-#   sheet = "02_17_matriculacion_preescolar")
-
-
-
 
