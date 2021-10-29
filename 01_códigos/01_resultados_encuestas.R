@@ -211,7 +211,9 @@ g1 <- ggplot(df_data,
     legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
+
 g1
 
 ggsave(paste0(out, "g01_", "pena_muerte", v_formato), 
@@ -235,14 +237,15 @@ g2 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g2
 
 ggsave(paste0(out, "g02_", "carcel_necesaria", v_formato),
   width = 6, height = 4)
 
-### 3.1.3. Abolir cárceles -----------------------------------------------------
+### 3.1.5. Abolir cárceles -----------------------------------------------------
 
 g3 <- ggplot(df_data, 
   aes(x = t03_abolir_carc, fill = grupo, color = grupo)) +
@@ -259,7 +262,8 @@ g3 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g3
 
@@ -283,7 +287,8 @@ g4 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g4
 
@@ -307,7 +312,9 @@ g5 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles)+
+  expand_limits(x = c(-1, 1.5))
+
 g5
 
 ggsave(paste0(out, "g05_", "cadena_perpetua", v_formato),
@@ -330,7 +337,8 @@ g6 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles)+
+  expand_limits(x = c(-1, 1.5))
 
 g6
 
@@ -354,7 +362,8 @@ g7 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g7
 
@@ -379,7 +388,8 @@ g8 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g8
 
@@ -403,14 +413,15 @@ g9 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g9 
 
 ggsave(paste0(out, "g09_", "derecho_conocer_agresores", v_formato),
   width = 6, height = 4)
 
-### 3.1.10. Pena de muerte ------------------------------------------------------
+### 3.1.10. Pena de muerte -----------------------------------------------------
 
 g10 <- ggplot(df_data, 
   aes(x = t10_carta_antec, fill = grupo, color = grupo)) +
@@ -427,7 +438,8 @@ g10 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g10
 
@@ -451,7 +463,8 @@ g11 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g11
 
@@ -476,7 +489,8 @@ g12 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles) 
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g12
 
@@ -501,7 +515,8 @@ g13 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g13
 
@@ -526,7 +541,8 @@ g14 <- ggplot(df_data,
   theme(legend.position = "top")+ 
   guides(color = "none") +
   scale_x_continuous(breaks = seq(-1, 1, 1),
-    labels = v_niveles)
+    labels = v_niveles) +
+  expand_limits(x = c(-1, 1.5))
 
 g14
 
@@ -592,4 +608,4 @@ ggplot(df_data, aes(x = respuesta, fill = grupo, color = grupo)) +
 
 ggsave(paste0(out, "g00_", "respuestas_inicio", v_formato),
   width = 12, height = 12)
-
+☺
