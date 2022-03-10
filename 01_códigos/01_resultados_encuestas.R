@@ -300,7 +300,7 @@ g2
 ggsave(paste0(out, "g02_", "carcel_necesaria", v_formato),
   width = 6, height = 4)
 
-### 3.1.5. Abolir cárceles -----------------------------------------------------
+### 3.1.3. Abolir cárceles -----------------------------------------------------
 
 g3 <- ggplot(df_data, 
   aes(x = t03_abolir_carc, fill = grupo, color = grupo)) +
@@ -663,4 +663,4 @@ ggplot(df_data, aes(x = respuesta, fill = grupo, color = grupo)) +
 
 ggsave(paste0(out, "g00_", "respuestas_inicio", v_formato),
   width = 12, height = 12)
-☺
+
