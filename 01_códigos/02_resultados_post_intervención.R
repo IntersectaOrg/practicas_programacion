@@ -264,8 +264,8 @@ df_data <- df_resultados          %>%
     p_long   = forcats::fct_inorder(p_long))
 
 # Títulos 
-v_title     <- "Cambio en posturas respecto al punitivismo"
-v_subtitle  <- "Antes y después del seminario de críticas al punitivismo"
+v_title     <- "Cambio en opinones respecto al punitivismo"
+v_subtitle  <- "Antes y después del seminario de Intersecta\n\"Críticas feministas al punitivismo\""
 v_empty     <- ""
 v_caption   <- "Nota: Se compara el promedio de las respuestas de todas las participantes."
 
@@ -286,13 +286,13 @@ ggplot(df_data,
   labs(
     title    = v_title, 
     subtitle = v_subtitle, 
-    x        = v_empty, 
+    x        = "\nRespuesta promedio\n", 
     y        = v_empty, 
     caption  = v_caption
   ) +
   # Escalas
   scale_x_continuous(breaks = seq(0, 100, 50), labels = v_niveles) +
-  scale_y_discrete(labels = scales::wrap_format(28)) + 
+  scale_y_discrete(labels = scales::wrap_format(32)) + 
   scale_color_manual(values = met.brewer("Morgenstern", 3)) +
   expand_limits(x = c(0, 110), y = c(0, 15)) +
   # Tema
@@ -301,6 +301,73 @@ ggplot(df_data,
 ggsave(paste0(out, "g_00_", "cambio_promedio", v_formato), 
        width = 8, height = 8, device = "png", type = "cairo")
 
+# ---- Versión en inglés 
+df_data <- df_resultados          %>% 
+  pivot_wider(    
+    names_from  = momento,     
+    values_from = respuesta)      %>% 
+  janitor::clean_names()          %>% 
+  mutate(cambio = inicio - final) %>% 
+  arrange((cambio))               %>% 
+  mutate(p_long = case_when(
+    pregunta == "t01_pena_muerte" ~ "The death penalty is unjustifiable",
+    pregunta == "t02_carcel_nece" ~ "Prison is necessary sometimes",
+    pregunta == "t03_abolir_carc" ~ "Prisons should be abolished",
+    pregunta == "t04_pena_propor" ~ "Jail sentences should be proportional to the damage",
+    pregunta == "t05_cadena_perp" ~ "Life-sentences are legitimate sometimes",
+    pregunta == "t06_vulnera_der" ~ "Lack of criminalization equals not protecting a right",
+    pregunta == "t07_desincentiv" ~ "Punishment inhibits harmful conducts",
+    pregunta == "t08_registro_ag" ~ "Sex Offenders Registries are necessary",
+    pregunta == "t09_saber_socie" ~ "Information on who has committed crimes should be public",
+    pregunta == "t10_carta_antec" ~ "Jobs should not require criminal records ",
+    pregunta == "t11_amenaza_dig" ~ "Men should be threatened with jail time for spreading intimate content without consent",
+    pregunta == "t12_creer_victi" ~ "Victims must always be believed",
+    pregunta == "t13_politica_pe" ~ "Criminal law should reflect the victims’ desires",
+    pregunta == "t14_castigo_vic" ~ "Any punishment is justifiable if the victim wants it")
+  ) %>% 
+  mutate(
+    pregunta = forcats::fct_inorder(pregunta),
+    p_long   = forcats::fct_inorder(p_long))
+
+v_levels <- c("Totally against (0)", "Neutral (50)", "Totally in favor (100)")
+
+v_title     <- "Change in perceptions towards punitivism"
+v_subtitle  <- "Before and after attending Intersecta's\n\"Feminist Critiques to Punitivism\" Seminar"
+v_empty     <- ""
+v_caption   <- "
+Note: The comparison shows the difference between the average response\nof all the participants, before and after the seminar."
+
+# Visualización 
+ggplot(df_data, 
+       aes(y = p_long, x = inicio, xend = final)) +
+  # Geoms
+  geom_dumbbell(
+    size = 2, color = "grey", colour_x = v_Hokusai[2], colour_xend = v_Hokusai[6],
+    dot_guide_size = 50) +
+  geom_text(data = df_data %>% filter(pregunta == "t04_pena_propor"), 
+            aes(x = inicio, y = 14.4, label = "Before"), 
+            color = "#666666", family = "Fira Sans") +
+  geom_text(data = df_data %>% filter(pregunta == "t04_pena_propor"), 
+            aes(x = final, y = 14.4, label = "After"), 
+            color = "#666666", family = "Fira Sans") +
+  # Etiquetas 
+  labs(
+    title    = v_title, 
+    subtitle = v_subtitle, 
+    x        = "\nAverage response", 
+    y        = v_empty, 
+    caption  = v_caption
+  ) +
+  # Escalas
+  scale_x_continuous(breaks = seq(0, 100, 50), labels = v_levels) +
+  scale_y_discrete(labels = scales::wrap_format(30)) + 
+  scale_color_manual(values = met.brewer("Morgenstern", 3)) +
+  expand_limits(x = c(0, 110), y = c(0, 15)) +
+  # Tema
+  tema
+
+ggsave(paste0(out, "g_00_", "change_mean", v_formato), 
+       width = 8, height = 8, device = "png", type = "cairo")
 
 #### 3.1.2. Pena de muerte -----------------------------------------------------
 
@@ -344,7 +411,28 @@ g1 <-
 g1
 
 ggsave(paste0(out, "g01_", "pena_muerte", v_formato), 
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
+
+ggplot(df_data, 
+       aes(x = t01_pena_muerte, fill = momento)) +
+  geom_bar() +
+  facet_wrap(~momento) +
+  theme_classic() +
+  # scale_y_continuous(label = scales::label_percent()) +
+  labs(
+    title    = v_title, 
+    subtitle = v_preguntas[1], 
+    x        = v_empty, 
+    y        = v_ylab, 
+    fill     = v_fill
+  ) +
+  guides(color = "none") +
+  # Escalas 
+  scale_x_continuous(breaks = seq(0, 100, 50), labels = v_niveles) +
+  scale_fill_manual(values = c(v_Hokusai[2], v_Hokusai[6])) +
+  scale_color_manual(values = c(v_Hokusai[2], v_Hokusai[6])) +
+  expand_limits(x = c(0, 110)) +
+  tema
 
 ### 3.1.3. La cárcel es necesaria ----------------------------------------------
 # Gráfica
@@ -374,7 +462,7 @@ g2 <-
 g2
 
 ggsave(paste0(out, "g02_", "carcel_necesaria", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 
 ### 3.1.4. Abolir cárceles -----------------------------------------------------
@@ -404,7 +492,7 @@ g3 <-
 g3
 
 ggsave(paste0(out, "g03_", "abolir_prisiones", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.5. Penas proporcionales al daño ----------------------------------------
 
@@ -433,7 +521,7 @@ g4 <-
 g4
 
 ggsave(paste0(out, "g04_", "pena_proporcional", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.6. Cadena perpetua -----------------------------------------------------
 
@@ -463,7 +551,7 @@ g5 <-
 g5
 
 ggsave(paste0(out, "g05_", "cadena_perpetua", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.6. Criminalizar protege derechos ---------------------------------------
 
@@ -492,7 +580,7 @@ g6 <-
 g6
 
 ggsave(paste0(out, "g06_", "criminalizar_protege", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.7. Castigar desincentiva -----------------------------------------------
 
@@ -521,7 +609,7 @@ g7 <-
 g7
 
 ggsave(paste0(out, "g07_", "castigo_desincentivo", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 
 ### 3.1.8. Registro de agresores -----------------------------------------------
@@ -551,7 +639,7 @@ g8 <-
 g8
 
 ggsave(paste0(out, "g08_", "registro_agresores", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.9. Derecho a saber quién cometió delitos -------------------------------
 
@@ -580,7 +668,7 @@ g9 <-
 g9
 
 ggsave(paste0(out, "g09_", "derecho_conocer_agresores", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.10. Pena de muerte -----------------------------------------------------
 
@@ -609,7 +697,7 @@ g10 <-
 g10
 
 ggsave(paste0(out, "g10_", "carta_antecedentes", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ### 3.1.11. Amenzar a hombres con cárcel ---------------------------------------
 
@@ -639,7 +727,7 @@ g11 <-
 g11
 
 ggsave(paste0(out, "g11_", "amenaza_cárcel", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 
 ### 3.1.12. Creer víctimas -----------------------------------------------------
@@ -669,7 +757,7 @@ g12 <-
 g12
 
 ggsave(paste0(out, "g12_", "creer_víctimas", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 
 ### 3.1.13. Políticas penales y necesidades ------------------------------------
@@ -699,7 +787,7 @@ g13 <-
 g13
 
 ggsave(paste0(out, "g13_", "políticas_penales", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 
 ### 3.1.14. Cualquier castigo --------------------------------------------------
@@ -729,7 +817,7 @@ g14 <-
 g14
 
 ggsave(paste0(out, "g14_", "cualquier_castigo", v_formato),
-       width = 6, height = 4)
+       width = 6, height = 4, device = "png", type = "cairo")
 
 ## 3.2. Un solo gráfico --------------------------------------------------------
 
@@ -785,4 +873,4 @@ ggplot(df_data, aes(x = respuesta, fill = momento, color = momento)) +
                      labels = v_niveles)
 
 ggsave(paste0(out, "g00_", "cambio_distribuciones", v_formato),
-       width = 12, height = 12)
+       width = 12, height = 12, device = "png", type = "cairo")
