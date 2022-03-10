@@ -1,6 +1,6 @@
 #------------------------------------------------------------------------------#
 # Proyecto:                   SEMINARIO CRÍTICAS FEMINISTAS AL PUNITIVISMO
-# Objetivo:                   Analizar resultados de la encuesta
+# Objetivo:                   Analizar resultados de la encuesta (solo inicial)
 #
 # Encargada:                  Regina Isabel Medina Rosales
 # Correo:                     rmedina@intersecta.org
@@ -25,7 +25,7 @@ p_load(readxl, googledrive, googlesheets4, tidyverse, dplyr, lubridate,
 rm(list=ls())
 
 # Establecer directorios
-inp     <- "datos_crudos/"
+inp     <- "02_datos_crudos/"
 
 # Activar las credenciales de google
 googledrive::drive_auth("rmedina@intersecta.org")
@@ -43,6 +43,7 @@ imp_dv <- function(x){
 
 # 1. Cargar datos --------------------------------------------------------------
 
+# ---- Preguntas pre-intervención (curso)
 # Respuestas de participantes 
 df_part_crudo <- imp_dv(
   "1KhPpSjSZM8i0_4i8SEGSa-WXMQjBHttPaFE0qZpwkTA/edit#gid=994639996")
@@ -51,17 +52,20 @@ df_part_crudo <- imp_dv(
 df_intr_crudo <- imp_dv(
   "1EBOjlw1AhBtMpXLY4VhJbhjsCLT6v5H0zl0ZS2lOuaw/edit#gid=941877612")
 
-
 dim(df_part_crudo)
 dim(df_intr_crudo)
+
+# ---- Preguntas post-intervención (curso)
+df_post_crudo <- read_excel(
+                    paste0(inp, "encuesta_salida_seminario_punitivismo.xlsx"))
 
 # 2. Procesar datos --------------------------------------------------------------
 
 # Guardar nombres 
-v_names <- names(df_part_crudo  %>% janitor::clean_names())
+v_names1 <- names(df_part_crudo  %>% janitor::clean_names())
 
-# Limpiar respuestas de participantes 
-df_part <- df_part_crudo        %>% 
+# Limpiar respuestas de participantes (antes el curso)
+df_part_pre <- df_part_crudo    %>% 
   filter(!is.na(respondent_id)) %>% 
   janitor::clean_names()        %>% 
   select(c(1:4, 10:23))         %>% 
@@ -114,12 +118,39 @@ df_intr <- df_intr_crudo        %>%
     grupo   = "Intersecta", 
     momento = "Inicio")
 
+
+# Limpiar respuestas de participantes post intervención
+df_part_post <- df_post_crudo   %>% 
+  filter(!is.na(respondent_id)) %>% 
+  janitor::clean_names()        %>% 
+  select(c(1:4, 10:23))         %>% 
+  rename(
+    t01_pena_muerte = v_names[10],
+    t02_carcel_nece = v_names[11], 
+    t03_abolir_carc = v_names[12], 
+    t04_pena_propor = v_names[13],
+    t05_cadena_perp = v_names[14],
+    t06_vulnera_der = v_names[15],
+    t07_desincentiv = v_names[16],
+    t08_registro_ag = v_names[17],
+    t09_saber_socie = v_names[18],
+    t10_carta_antec = v_names[19],
+    t11_amenaza_dig = v_names[20],
+    t12_creer_victi = v_names[21],
+    t13_politica_pe = v_names[22],
+    t14_castigo_vic = v_names[23]) %>% 
+  mutate(
+    grupo   = "Participantes seminario", 
+    momento = "Final"
+  )
+
 # Verificar 
-dim(df_part)
 dim(df_intr)
+dim(df_part_pre)
+dim(df_part_post)
 
 # Unir bases
-df_respuestas <- as.data.frame(df_part)  %>%
+df_respuestas_pre <- as.data.frame(df_part_pre)  %>%
   bind_rows(as.data.frame(df_intr))      %>%
   # Eliminar a la persona que respondió de manera incompleta 
   filter(respondent_id != "13025443830") %>% 
@@ -141,6 +172,29 @@ df_respuestas <- as.data.frame(df_part)  %>%
     t13_politica_pe = unlist(t13_politica_pe),
     t14_castigo_vic = unlist(t14_castigo_vic)
     ) %>% 
+  # Estandarizar respuestas en escala de -100 a 100
+  mutate_if(is.numeric, 
+    ~as.numeric((2*(. - min(.))/(max(.)-min(.)))-1))
+
+df_respuestas_post <- as.data.frame(df_part_post) %>% 
+  filter(respondent_id != "13359167614") %>% 
+  mutate(
+    respondent_id = as.character(respondent_id), 
+    t01_pena_muerte = as.numeric(t01_pena_muerte), 
+    t02_carcel_nece = as.numeric(t02_carcel_nece),
+    t03_abolir_carc = as.numeric(t03_abolir_carc),
+    t04_pena_propor = as.numeric(t04_pena_propor),
+    t05_cadena_perp = as.numeric(t05_cadena_perp),
+    t06_vulnera_der = as.numeric(t06_vulnera_der),
+    t07_desincentiv = as.numeric(t07_desincentiv),
+    t08_registro_ag = as.numeric(t08_registro_ag),
+    t09_saber_socie = as.numeric(t09_saber_socie),
+    t10_carta_antec = as.numeric(t10_carta_antec),
+    t11_amenaza_dig = as.numeric(t11_amenaza_dig),
+    t12_creer_victi = as.numeric(t12_creer_victi),
+    t13_politica_pe = as.numeric(t13_politica_pe),
+    t14_castigo_vic = as.numeric(t14_castigo_vic)
+  ) %>% 
   # Estandarizar respuestas en escala de -100 a 100
   mutate_if(is.numeric, 
     ~as.numeric((2*(. - min(.))/(max(.)-min(.)))-1))
@@ -183,13 +237,14 @@ v_formato <- ".png"
 ## 3.1. Figuras ----------------------------------------------------------------
 
 # Cambiar filtros y directorio según el grupo que se quiera estudiar 
-out     <- "figs/seminario_punitivismo/participantes/" # Cambiar según filtros 
+out       <- "figs/seminario_punitivismo/participantes/" # Cambiar según filtros 
+out_post  <- "figs/cambio/"
 
 # Para ambos grupos 
 # df_data <- df_respuestas
 
 # Solo para las participantes del seminario
-df_data <-  df_respuestas                     %>% 
+df_data <-  df_respuestas_pre                     %>% 
   filter(grupo == "Participantes seminario")
 
 ### 3.1.1. Pena de muerte ------------------------------------------------------
